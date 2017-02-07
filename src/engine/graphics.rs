@@ -3,11 +3,17 @@ use sdl2::render::Renderer;
 
 pub struct Graphics {
     pub sdl: sdl2::Sdl,
-    pub screen: Renderer<'static>,
+    pub screen: Renderer<'static>
 }
 
 impl Graphics {
     // currently only needed for parsing the lifetime
+    fn new(renderer : Renderer<'static>, sdl_context : sdl2::Sdl) -> Self {
+        Graphics {
+            screen: renderer,
+            sdl: sdl_context,
+        }
+    }
 }
 
 pub fn init_renderer(title: &'static str, width: u32, height: u32) -> Graphics {
@@ -27,8 +33,5 @@ pub fn init_renderer(title: &'static str, width: u32, height: u32) -> Graphics {
     let renderer = window.renderer().build().unwrap();
 
     // return struct
-    Graphics {
-        screen: renderer,
-        sdl: sdl_context,
-    }
+    return Graphics::new(renderer, sdl_context)
 }
