@@ -13,8 +13,8 @@ use engine::graphics::Graphics;
 // TODO, This could be further improved
 static DELAY_TIME: u32 = 1000 / 3 as u32; // 1_000/60 ~ 60fps
 
-pub struct Game<'a> {
-    pub display: Graphics<'a>,
+pub struct Game {
+    pub display: Graphics,
     pub running: bool,
     pub gameobjects: Vec<Entity>,
 }
@@ -40,7 +40,7 @@ pub fn new(display: Graphics) -> Game {
     }
 }
 
-impl<'a> Game<'a> {
+impl Game {
     pub fn start(&mut self) {
 
         let mut timer = self.display.sdl.timer().unwrap();

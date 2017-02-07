@@ -1,12 +1,12 @@
 use sdl2;
 use sdl2::render::Renderer;
 
-pub struct Graphics<'g> {
+pub struct Graphics {
     pub sdl: sdl2::Sdl,
-    pub screen: Renderer<'g>,
+    pub screen: Renderer<'static>,
 }
 
-impl<'g> Graphics<'g> {
+impl Graphics {
     // currently only needed for parsing the lifetime
 }
 
