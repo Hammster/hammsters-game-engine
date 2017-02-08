@@ -1,26 +1,29 @@
 //! ### Game initializing
+mod movabledev;
 
 // sdl2
-use sdl2;
-use sdl2::render::Renderer;
 use sdl2::pixels::Color;
 use sdl2::keyboard::Keycode;
+use sdl2::mouse::MouseButton;
 use sdl2::event::Event;
 
 //engine
 use engine::gameobject::{GameObject, Entity};
 use engine::context::Context;
 
+use game::movabledev::Movabledev;
+
 // static frames
 // TODO, This could be further improved
-static DELAY_TIME: u32 = 1000 / 3 as u32; // 1_000/60 ~ 60fps
+static DELAY_TIME: u32 = 1000 / 60 as u32; // 1_000/60 ~ 60fps
 
 #[derive(Debug)]
 pub struct Game {
     // add refactored context
     pub context: Context,
     pub running: bool,
-    pub gameobjects: Vec<Entity>,
+    // TODO, make this type flexible
+    pub gameobjects: Vec<Movabledev>,
 }
 
 impl Game {
@@ -30,7 +33,7 @@ impl Game {
         let context = Context::new("Rust Engine",800,600);
 
         let mut objects = vec![];
-        let object: Entity = GameObject::new(10, 10, 30, 30);
+        let object: Movabledev = GameObject::new(10, 10, 30, 30);
         objects.push(object);
 
         Game {
@@ -48,8 +51,8 @@ impl Game {
         while self.running {
             frame_start = timer.ticks();
 
-            self.handle_events();
-            self.update();
+            let event = &mut self.handle_events();
+            self.update(event);
             self.render();
 
             deltatime = timer.ticks() - frame_start;
@@ -59,9 +62,9 @@ impl Game {
         }
     }
 
-    fn update(&mut self) {
+    fn update(&mut self, event: &mut Vec<Event>) {
         for x in self.gameobjects.iter_mut() {
-            x.update();
+            x.update(event);
         }
     }
 
@@ -84,17 +87,30 @@ impl Game {
         renderer.present();
     }
 
-    fn handle_events(&mut self) {
+    fn handle_events(&mut self) -> Vec<Event> {
 
-        let mut event_pump = self.context.sdl.event_pump().unwrap();
+        let mut event_pump      = self.context.sdl.event_pump().unwrap();
+        let mut active_events   = vec![];
 
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => self.running = false,
+                Event::MouseButtonDown { mouse_btn: MouseButton::Left, .. } => active_events.push(event),
                 _ => self.running = true,
             };
         }
 
+        if !active_events.is_empty() {
+            println!("{:?}", active_events );
+        }
+
+        active_events
+    }
+
+    fn loop_gameobjects(&mut self){
+        for object in self.gameobjects.iter() {
+
+        }
     }
 }

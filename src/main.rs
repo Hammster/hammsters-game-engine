@@ -4,8 +4,8 @@ mod engine;
 mod game;
 
 fn main() {
-    //let renderer = engine::graphics::init_renderer("Rust Engine Test", 1040, 580);
     let mut game = game::Game::new();
+    // just some debug information
     println!("{:?}", game);
     game.start();
 }

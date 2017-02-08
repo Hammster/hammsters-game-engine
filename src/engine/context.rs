@@ -4,12 +4,9 @@ use sdl2::{self, Sdl};
 use sdl2::render::Renderer;
 use sdl2::video::{Window, WindowBuildError};
 
-use engine::error::EngineError;
-
 pub struct Context {
     pub sdl: Sdl,
     pub renderer: Renderer<'static>,
-    // pub event: sdl2::EventSubsystem,
 }
 
 impl Context {

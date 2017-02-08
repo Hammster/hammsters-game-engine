@@ -1,4 +1,4 @@
-use std;
+//use std;
 //use std::error::Error;
 use std::fmt;
 
@@ -16,8 +16,8 @@ pub struct EngineErrorMsg {
 impl EngineErrorMsg {
     pub fn new(errorcode: u32, msg: &'static str) -> Self {
         EngineErrorMsg {
-            errcode : errorcode,
-            msg : msg,
+            errcode: errorcode,
+            msg: msg,
         }
     }
 }

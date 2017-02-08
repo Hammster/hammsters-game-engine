@@ -1,5 +1,6 @@
 use sdl2::render::Renderer;
 use sdl2::rect::Rect;
+use sdl2::event::Event;
 
 // Base Information
 // TODO, Texture
@@ -9,6 +10,7 @@ pub struct Entity {
     pub y: i32,
     pub w: u32,
     pub h: u32,
+
 }
 
 impl Entity {
@@ -18,7 +20,7 @@ impl Entity {
 pub trait GameObject {
     fn new(x: i32, y: i32, w: u32, h: u32) -> Self;
     fn draw(&self, renderer: &mut Renderer);
-    fn update(&mut self);
+    fn update(&mut self, event: &Vec<Event>);
 }
 
 impl GameObject for Entity {
@@ -27,19 +29,18 @@ impl GameObject for Entity {
             x: x,
             y: y,
             w: w,
-            h: h,
+            h: h
         }
     }
 
     // filling the backbuffer of the render function
     fn draw(&self, renderer: &mut Renderer) {
-        renderer.draw_rect(Rect::new(self.x, self.y, self.w, self.h)).unwrap();
-        // '?' operator for error handling instead of unwrap() ???
+        renderer.fill_rect(Rect::new(self.x, self.y, self.w, self.h)).unwrap();
     }
 
     // called on each update from the main loop
-    fn update(&mut self) {
-        // for example
-        self.y += self.h as i32 + 3;
+    fn update(&mut self, event: &Vec<Event>) {
+        // nothing
     }
+
 }
