@@ -1,5 +1,5 @@
 //! ### Game initializing
-mod movabledev;
+mod square;
 
 // sdl2
 use sdl2::pixels::Color;
@@ -8,32 +8,28 @@ use sdl2::mouse::MouseButton;
 use sdl2::event::Event;
 
 //engine
-use engine::gameobject::{GameObject, Entity};
+use engine::gameobject::GameObject;
 use engine::context::Context;
 
-use game::movabledev::Movabledev;
-
-// static frames
-// TODO, This could be further improved
-static DELAY_TIME: u32 = 1000 / 60 as u32; // 1_000/60 ~ 60fps
+use game::square::Square;
 
 #[derive(Debug)]
 pub struct Game {
-    // add refactored context
     pub context: Context,
     pub running: bool,
-    // TODO, make this type flexible
-    pub gameobjects: Vec<Movabledev>,
+    // TODO, make this type flexible, Box could be used
+    pub gameobjects: Vec<Square>,
 }
 
-impl Game {
 
+impl Game {
     pub fn new() -> Game {
-        // TODO, make it better remove the testing things
-        let context = Context::new("Rust Engine",800,600);
+        let context = Context::new("Rust Engine", 800, 600);
 
         let mut objects = vec![];
-        let object: Movabledev = GameObject::new(10, 10, 30, 30);
+        let object: Square = GameObject::new(10, 10, 30, 180);
+        objects.push(object);
+        let object: Square = GameObject::new(760, 10, 30, 180);
         objects.push(object);
 
         Game {
@@ -44,27 +40,46 @@ impl Game {
     }
 
     pub fn start(&mut self) {
+
+        // borrow timer context
         let mut timer = self.context.sdl.timer().unwrap();
-        let mut frame_start: u32;
-        let mut deltatime: u32;
+
+        let interval = 1_000 / 60; // capped physics frames
+
+        let mut before = timer.ticks();
+        let mut last_second = timer.ticks();
+        let mut fps = 0u16;
+
 
         while self.running {
-            frame_start = timer.ticks();
+            let now = timer.ticks();
+            let dt = now - before;
+            // usable dt
+            let deltatime = dt as f64 / 1_000.0;
+
+            if dt < interval {
+                timer.delay(interval - dt);
+                continue;
+            }
+
+            before = now;
+            fps += 1;
+
+            if now - last_second > 1_000 {
+                println!("FPS: {}", fps);
+                last_second = now;
+                fps = 0;
+            }
 
             let event = &mut self.handle_events();
-            self.update(event);
+            self.update(event, deltatime);
             self.render();
-
-            deltatime = timer.ticks() - frame_start;
-            if deltatime < DELAY_TIME {
-                timer.delay((DELAY_TIME - deltatime) as u32);
-            }
         }
     }
 
-    fn update(&mut self, event: &mut Vec<Event>) {
+    fn update(&mut self, event: &mut Vec<Event>, deltatime: f64) {
         for x in self.gameobjects.iter_mut() {
-            x.update(event);
+            x.update(event, deltatime);
         }
     }
 
@@ -89,28 +104,20 @@ impl Game {
 
     fn handle_events(&mut self) -> Vec<Event> {
 
-        let mut event_pump      = self.context.sdl.event_pump().unwrap();
-        let mut active_events   = vec![];
+        let mut event_pump = self.context.sdl.event_pump().unwrap();
+        let mut active_events = vec![];
 
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => self.running = false,
-                Event::MouseButtonDown { mouse_btn: MouseButton::Left, .. } => active_events.push(event),
+                Event::MouseButtonDown { mouse_btn: MouseButton::Left, .. } => {
+                    active_events.push(event)
+                }
                 _ => self.running = true,
             };
         }
 
-        if !active_events.is_empty() {
-            println!("{:?}", active_events );
-        }
-
         active_events
-    }
-
-    fn loop_gameobjects(&mut self){
-        for object in self.gameobjects.iter() {
-
-        }
     }
 }
