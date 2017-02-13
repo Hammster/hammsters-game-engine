@@ -8,7 +8,7 @@ use sdl2::mouse::MouseButton;
 use sdl2::event::Event;
 
 //engine
-use engine::gameobject::GameObject;
+use engine::gameobject::{GameObject, GameObjectManager};
 use engine::context::Context;
 
 use game::square::Square;
@@ -18,24 +18,25 @@ pub struct Game {
     pub context: Context,
     pub running: bool,
     // TODO, make this type flexible, Box could be used
-    pub gameobjects: Vec<Square>,
+    pub objectmanager: GameObjectManager,
 }
-
 
 impl Game {
     pub fn new() -> Game {
         let context = Context::new("Rust Engine", 800, 600);
 
-        let mut objects = vec![];
-        let object: Square = GameObject::new(10, 10, 30, 180);
-        objects.push(object);
-        let object: Square = GameObject::new(760, 10, 30, 180);
-        objects.push(object);
+        let mut objectmanager = GameObjectManager::new();
+        let mut object: Square = GameObject::new(10, 10, 30, 30);
+        objectmanager.add("ObjectA", Box::new(object));
+        // objectmanager.get("ObjectA");
+        // objectmanager.remove("ObjectA");
+
+        println!("{:?}", objectmanager);
 
         Game {
             context: context,
             running: true,
-            gameobjects: objects,
+            objectmanager: objectmanager,
         }
     }
 
@@ -78,8 +79,8 @@ impl Game {
     }
 
     fn update(&mut self, event: &mut Vec<Event>, deltatime: f64) {
-        for x in self.gameobjects.iter_mut() {
-            x.update(event, deltatime);
+        for (id, object) in &mut self.objectmanager.objects {
+            object.update(event, deltatime);
         }
     }
 
@@ -95,8 +96,9 @@ impl Game {
         renderer.set_draw_color(Color::RGB(255, 0, 0));
 
         // draw the objects
-        for x in self.gameobjects.iter() {
-            x.draw(&mut renderer);
+        for (id, object) in &mut self.objectmanager.objects {
+            println!("{:?}", id);
+            object.draw(&mut renderer);
         }
 
         renderer.present();
