@@ -5,27 +5,24 @@ use sdl2::mouse::MouseButton;
 #[derive(Debug)]
 pub enum EventType {
     Keycode,
-    MouseButton
+    MouseButton,
 }
 
 #[derive(Debug)]
 pub struct EventManager {
-    events : Vec<EventType>,
+    events: Vec<EventType>,
 }
 
 impl EventManager {
     pub fn new() -> Self {
-        EventManager {
-            events : vec![]
-        }
+        EventManager { events: vec![] }
     }
 
-    pub fn push(&mut self, et : EventType){
+    pub fn push(&mut self, et: EventType) {
         self.events.push(et);
     }
 
     pub fn pop(&mut self) -> Option<EventType> {
         self.events.pop()
     }
-
 }

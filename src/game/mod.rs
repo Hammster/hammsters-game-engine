@@ -22,7 +22,7 @@ use game::square::Square;
 pub struct Game {
     pub context: Context,
     pub objectmanager: GameObjectManager,
-    pub statemanager: StateManager,
+    pub statemanager: StateManager, 
     //pub eventmanager: EventManager,
 }
 
@@ -53,7 +53,7 @@ impl Game {
         Game {
             context: context,
             objectmanager: objectmanager,
-            statemanager: statemanager,
+            statemanager: statemanager, 
             //eventmanager: eventmanager,
         }
     }
@@ -128,7 +128,9 @@ impl Game {
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } |
-                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => self.statemanager.get("main").unwrap().set(false),
+                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                    self.statemanager.get("main").unwrap().set(false)
+                }
                 Event::MouseButtonDown { mouse_btn: MouseButton::Left, .. } => {
                     active_events.push(event)
                 }

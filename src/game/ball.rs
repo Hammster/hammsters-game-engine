@@ -17,7 +17,7 @@ pub struct Ball {
     pub h: u32,
     pub pong: bool,
     pub color: Color,
-    pub angle: f64
+    pub angle: f64,
 }
 
 impl Ball {
@@ -27,7 +27,7 @@ impl Ball {
 
     fn reset(&mut self) {
         self.angle = 90.0;
-        self.color = Color::RGB(255,255,255);
+        self.color = Color::RGB(255, 255, 255);
     }
 }
 
@@ -40,7 +40,7 @@ impl GameObject for Ball {
             h: h,
             pong: true,
             angle: 90.0,
-            color: Color::RGB(255,255,255),
+            color: Color::RGB(255, 255, 255),
         }
     }
 

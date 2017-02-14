@@ -10,7 +10,7 @@ pub trait GameObject: fmt::Debug {
 
     // static
     fn draw(&self, renderer: &mut Renderer);
-    fn update(&mut self, event: &Vec<Event>, deltatime: f64, game : &Game);
+    fn update(&mut self, event: &Vec<Event>, deltatime: f64, game: &Game);
 }
 
 #[derive(Debug)]
