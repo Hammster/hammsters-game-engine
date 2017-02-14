@@ -1,5 +1,8 @@
 //! ### Game initializing
 mod square;
+mod player;
+mod ball;
+mod opponent;
 
 // sdl2
 use sdl2::pixels::Color;
@@ -9,6 +12,8 @@ use sdl2::event::Event;
 
 //engine
 use engine::gameobject::{GameObject, GameObjectManager};
+use engine::event::{EventType, EventManager};
+use engine::state::{State, StateManager};
 use engine::context::Context;
 
 use game::square::Square;
@@ -16,9 +21,9 @@ use game::square::Square;
 #[derive(Debug)]
 pub struct Game {
     pub context: Context,
-    pub running: bool,
-    // TODO, make this type flexible, Box could be used
     pub objectmanager: GameObjectManager,
+    pub statemanager: StateManager,
+    //pub eventmanager: EventManager,
 }
 
 impl Game {
@@ -26,17 +31,30 @@ impl Game {
         let context = Context::new("Rust Engine", 800, 600);
 
         let mut objectmanager = GameObjectManager::new();
-        let mut object: Square = GameObject::new(10, 10, 30, 30);
-        objectmanager.add("ObjectA", Box::new(object));
-        // objectmanager.get("ObjectA");
-        // objectmanager.remove("ObjectA");
+        let mut statemanager = StateManager::new();
+
+        let mut main = State::new();
+        main.toggle();
+
+        statemanager.insert("main", main);
+
+        //let mut eventmanager = EventManager::new();
+
+        let object: Square = GameObject::new(10, 10, 30, 170);
+        objectmanager.insert("Player", Box::new(object));
+        let object: Square = GameObject::new(750, 10, 30, 170);
+        objectmanager.insert("Opponent", Box::new(object));
+
+        let object: Square = GameObject::new(400, 300, 30, 30);
+        objectmanager.insert("Ball", Box::new(object));
 
         println!("{:?}", objectmanager);
 
         Game {
             context: context,
-            running: true,
             objectmanager: objectmanager,
+            statemanager: statemanager,
+            //eventmanager: eventmanager,
         }
     }
 
@@ -51,8 +69,7 @@ impl Game {
         let mut last_second = timer.ticks();
         let mut fps = 0u16;
 
-
-        while self.running {
+        while self.statemanager.is_running("main") {
             let now = timer.ticks();
             let dt = now - before;
             // usable dt
@@ -80,7 +97,7 @@ impl Game {
 
     fn update(&mut self, event: &mut Vec<Event>, deltatime: f64) {
         for (id, object) in &mut self.objectmanager.objects {
-            object.update(event, deltatime);
+            object.update(event, deltatime, self);
         }
     }
 
@@ -97,7 +114,6 @@ impl Game {
 
         // draw the objects
         for (id, object) in &mut self.objectmanager.objects {
-            println!("{:?}", id);
             object.draw(&mut renderer);
         }
 
@@ -112,11 +128,11 @@ impl Game {
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } |
-                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => self.running = false,
+                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => self.statemanager.get("main").unwrap().set(false),
                 Event::MouseButtonDown { mouse_btn: MouseButton::Left, .. } => {
                     active_events.push(event)
                 }
-                _ => self.running = true,
+                _ => (),
             };
         }
 
