@@ -2,8 +2,8 @@ use sdl2::event::Event;
 use sdl2::render::Renderer;
 use sdl2::rect::Rect;
 use sdl2::pixels::Color;
-//use sdl2::keyboard::Keycode;
-use sdl2::mouse::MouseButton;
+// use sdl2::keyboard::Keycode;
+// use sdl2::mouse::MouseButton;
 
 use rand;
 use game::Game;
@@ -56,9 +56,9 @@ impl GameObject for Ball {
         self.reset();
 
         if self.pong {
-            self.x += 3;
+            self.x += 4;
         } else {
-            self.x -= 3;
+            self.x -= 4;
         }
 
         if !self.pong && self.x <= 10 {

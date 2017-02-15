@@ -3,14 +3,8 @@ use sdl2::keyboard::Keycode;
 use sdl2::mouse::MouseButton;
 
 #[derive(Debug)]
-pub enum EventType {
-    Keycode,
-    MouseButton,
-}
-
-#[derive(Debug)]
 pub struct EventManager {
-    events: Vec<EventType>,
+    events: Vec<Event>,
 }
 
 impl EventManager {
@@ -18,11 +12,11 @@ impl EventManager {
         EventManager { events: vec![] }
     }
 
-    pub fn push(&mut self, et: EventType) {
+    pub fn push(&mut self, et: Event) {
         self.events.push(et);
     }
 
-    pub fn pop(&mut self) -> Option<EventType> {
+    pub fn pop(&mut self) -> Option<Event> {
         self.events.pop()
     }
 }

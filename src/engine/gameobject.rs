@@ -7,7 +7,7 @@ pub trait GameObject: fmt::Debug {
     // Return type of Trait implementer
     fn new(x: i32, y: i32, w: u32, h: u32) -> Self where Self: Sized;
 
-    // static
+    // Required implement functions
     fn draw(&self, renderer: &mut Renderer);
     fn update(&mut self, event: &Vec<Event>, deltatime: f64);
 }
@@ -19,14 +19,14 @@ pub struct GameObjectManager {
 
 impl GameObjectManager {
     pub fn new() -> Self {
-        // TODO, search for indetical names
-        let objects: HashMap<&'static str, Box<GameObject>> = HashMap::new();
+        // TODO, suffixing duplicats
+        let mut objects: HashMap<&'static str, Box<GameObject>> = HashMap::new();
         GameObjectManager { objects: objects }
     }
 
     // Add wrapper
     pub fn insert(&mut self, id: &'static str, gameobject: Box<GameObject>) {
-        // TODO, suffixing a _ on duplicat
+        // TODO, suffixing duplicats
         self.objects.insert(id, gameobject);
     }
 
@@ -35,7 +35,15 @@ impl GameObjectManager {
         self.objects.remove(id);
     }
 
+    // object()
     pub fn get(&mut self, id: &'static str) -> Option<&Box<GameObject>> {
         self.objects.get(id)
     }
+
+    pub fn objects(&mut self) -> &mut HashMap<&'static str, Box<GameObject>> {
+        let ret : &mut HashMap<&'static str, Box<GameObject>> = &mut self.objects;
+        ret
+    }
 }
+
+// scenemanager.scenes.scene.gameobjectmanager.objects.gameojects

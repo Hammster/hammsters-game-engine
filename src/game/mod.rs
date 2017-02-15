@@ -12,50 +12,73 @@ use sdl2::event::Event;
 
 //engine
 use engine::gameobject::{GameObject, GameObjectManager};
-use engine::event::{EventType, EventManager};
-use engine::state::{State, StateManager};
+use engine::event::EventManager;
+use engine::scene::{Scene, SceneManager, State};
 use engine::context::Context;
 
 use game::square::Square;
+use game::ball::Ball;
+use game::player::Player;
+use game::opponent::Opponent;
 
 #[derive(Debug)]
 pub struct Game {
     pub context: Context,
-    pub objectmanager: GameObjectManager,
-    pub statemanager: StateManager, 
+    pub scenemanager: SceneManager,
+    pub currentscene: &'static str,
     //pub eventmanager: EventManager,
 }
 
 impl Game {
     pub fn new() -> Game {
-        let context = Context::new("Rust Engine", 800, 600);
+        let ww = 800; 
+        let wh = 600;
 
-        let mut objectmanager = GameObjectManager::new();
-        let mut statemanager = StateManager::new();
+        let context = Context::new("Rust Engine", ww, wh);
 
-        let mut main = State::new();
-        main.toggle();
+        let mut scenemanager = SceneManager::new();
 
-        statemanager.insert("main", main);
+        scenemanager.create("main");
+        scenemanager.create("menu");
+        
+        scenemanager.get("main").unwrap().state = State::Running;
+
+        let player: Player = GameObject::new(10, 10, 30, (wh/3)-20 as u32);
+        let opponent: Square = GameObject::new((ww - 40) as i32, 10, 30, (wh/3)-20 as u32);
+        let object: Opponent = GameObject::new(750, 10, 30, 170);
+
+        let ball: Ball = GameObject::new((ww/2) as i32, (wh/2) as i32, 30, 30);
+
+        scenemanager.get("main").unwrap().gameobjectmanager.insert("Player", Box::new(player));
+        scenemanager.get("main").unwrap().gameobjectmanager.insert("Opponent", Box::new(opponent));
+        scenemanager.get("main").unwrap().gameobjectmanager.insert("Ball", Box::new(ball));
+
+        let game : Game = Game {
+            context: context,
+            scenemanager: scenemanager, 
+            currentscene: "main"
+            //eventmanager: eventmanager,
+        };
 
         //let mut eventmanager = EventManager::new();
+        
+        /*let main : Scene = game.scenemanager.scenes.get_mut("main").unwrap();
+        let object: Square = GameObject::new(10, 10, 30, 170);
+        main.gameobjectmanager.insert("Pepsi Max", Box::new(object));
 
         let object: Square = GameObject::new(10, 10, 30, 170);
-        objectmanager.insert("Player", Box::new(object));
+        main.objectmanager.insert("Player", Box::new(object));
         let object: Square = GameObject::new(750, 10, 30, 170);
-        objectmanager.insert("Opponent", Box::new(object));
-
+        main.objectmanager.insert("Opponent", Box::new(object));
         let object: Square = GameObject::new(400, 300, 30, 30);
-        objectmanager.insert("Ball", Box::new(object));
+        main.objectmanager.insert("Ball", Box::new(object));
+        */
+        
 
-        println!("{:?}", objectmanager);
+        println!("Init");
+        println!("{:?}",game);
 
-        Game {
-            context: context,
-            objectmanager: objectmanager,
-            statemanager: statemanager, 
-            //eventmanager: eventmanager,
-        }
+        game
     }
 
     pub fn start(&mut self) {
@@ -69,7 +92,7 @@ impl Game {
         let mut last_second = timer.ticks();
         let mut fps = 0u16;
 
-        while self.statemanager.is_running("main") {
+        while self.scenemanager.is_running("main") {
             let now = timer.ticks();
             let dt = now - before;
             // usable dt
@@ -96,7 +119,7 @@ impl Game {
     }
 
     fn update(&mut self, event: &mut Vec<Event>, deltatime: f64) {
-        for (id, object) in &mut self.objectmanager.objects {
+        for (id, object) in &mut self.scenemanager.get(self.currentscene).unwrap().gameobjectmanager.objects {
             object.update(event, deltatime);
         }
     }
@@ -113,7 +136,7 @@ impl Game {
         renderer.set_draw_color(Color::RGB(255, 0, 0));
 
         // draw the objects
-        for (id, object) in &mut self.objectmanager.objects {
+        for (id, object) in &mut self.scenemanager.get(self.currentscene).unwrap().gameobjectmanager.objects {
             object.draw(&mut renderer);
         }
 
@@ -129,7 +152,7 @@ impl Game {
             match event {
                 Event::Quit { .. } |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    self.statemanager.get("main").unwrap().set(false)
+                    self.scenemanager.get("main").unwrap().stop()
                 }
                 Event::MouseButtonDown { mouse_btn: MouseButton::Left, .. } => {
                     active_events.push(event)
