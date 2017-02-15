@@ -97,7 +97,7 @@ impl Game {
 
     fn update(&mut self, event: &mut Vec<Event>, deltatime: f64) {
         for (id, object) in &mut self.objectmanager.objects {
-            object.update(event, deltatime, self);
+            object.update(event, deltatime);
         }
     }
 

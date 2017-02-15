@@ -1,4 +1,3 @@
-use game::Game;
 use sdl2::render::Renderer;
 use sdl2::event::Event;
 use std::collections::HashMap;
@@ -10,7 +9,7 @@ pub trait GameObject: fmt::Debug {
 
     // static
     fn draw(&self, renderer: &mut Renderer);
-    fn update(&mut self, event: &Vec<Event>, deltatime: f64, game: &Game);
+    fn update(&mut self, event: &Vec<Event>, deltatime: f64);
 }
 
 #[derive(Debug)]
@@ -20,7 +19,7 @@ pub struct GameObjectManager {
 
 impl GameObjectManager {
     pub fn new() -> Self {
-        //TODO, search for indetical names
+        // TODO, search for indetical names
         let objects: HashMap<&'static str, Box<GameObject>> = HashMap::new();
         GameObjectManager { objects: objects }
     }

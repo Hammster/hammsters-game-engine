@@ -7,7 +7,7 @@ use sdl2::mouse::MouseButton;
 
 use rand;
 use game::Game;
-use engine::gameobject::GameObject;
+use engine::gameobject::{GameObject, GameObjectManager};
 
 #[derive(Debug)]
 pub struct Ball {
@@ -51,7 +51,7 @@ impl GameObject for Ball {
     }
 
     // called on each update from the main loop
-    fn update(&mut self, event: &Vec<Event>, deltatime: f64, game: &Game) {
+    fn update(&mut self, event: &Vec<Event>, deltatime: f64) {
 
         self.reset();
 
