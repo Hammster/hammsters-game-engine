@@ -1,6 +1,8 @@
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use sdl2::mouse::MouseButton;
+pub #[derive(Debug)]
+enum Event {
+    Keyboard,
+    Mouse,
+}
 
 #[derive(Debug)]
 pub struct EventManager {

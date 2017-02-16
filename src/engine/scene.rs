@@ -70,12 +70,6 @@ impl SceneManager {
         }
     }
 
-    /*
-        pub fn get_objectmanager(&mut self, id: &'static str) -> &mut HashMap<&'static str, Box<GameObject>> {
-            self.scenes.get(id).unwrap().debug()
-        }
-    */
-
     pub fn is_running(&mut self, id: &'static str) -> bool {
         self.get_state(id) == State::Running
     }

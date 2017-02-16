@@ -4,12 +4,6 @@ mod player;
 mod ball;
 mod opponent;
 
-// sdl2
-use sdl2::pixels::Color;
-use sdl2::keyboard::Keycode;
-use sdl2::mouse::MouseButton;
-use sdl2::event::Event;
-
 //engine
 use engine::gameobject::{GameObject, GameObjectManager};
 use engine::event::EventManager;
@@ -26,7 +20,6 @@ pub struct Game {
     pub context: Context,
     pub scenemanager: SceneManager,
     pub currentscene: &'static str,
-    //pub eventmanager: EventManager,
 }
 
 impl Game {
@@ -53,32 +46,11 @@ impl Game {
         scenemanager.get("main").unwrap().gameobjectmanager.insert("Opponent", Box::new(opponent));
         scenemanager.get("main").unwrap().gameobjectmanager.insert("Ball", Box::new(ball));
 
-        let game : Game = Game {
+        Game {
             context: context,
             scenemanager: scenemanager, 
             currentscene: "main"
-            //eventmanager: eventmanager,
-        };
-
-        //let mut eventmanager = EventManager::new();
-        
-        /*let main : Scene = game.scenemanager.scenes.get_mut("main").unwrap();
-        let object: Square = GameObject::new(10, 10, 30, 170);
-        main.gameobjectmanager.insert("Pepsi Max", Box::new(object));
-
-        let object: Square = GameObject::new(10, 10, 30, 170);
-        main.objectmanager.insert("Player", Box::new(object));
-        let object: Square = GameObject::new(750, 10, 30, 170);
-        main.objectmanager.insert("Opponent", Box::new(object));
-        let object: Square = GameObject::new(400, 300, 30, 30);
-        main.objectmanager.insert("Ball", Box::new(object));
-        */
-        
-
-        println!("Init");
-        println!("{:?}",game);
-
-        game
+        }
     }
 
     pub fn start(&mut self) {
