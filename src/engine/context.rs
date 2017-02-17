@@ -1,24 +1,29 @@
 use std::fmt;
-use glium;
-use glium::backend::Facade;
 
+use glutin;
+use gl;
 
 pub struct Context {
-    pub display: Facade,
+    pub window: glutin::Window
 }
 
 impl Context {
-    pub fn new(window_title: &str, screen_width: u32, screen_height: u32) -> Self {
-        use glium::DisplayBuild;
-        let display = glium::glutin::WindowBuilder::new().build_glium().unwrap();
+    pub fn new(window_title: &str) -> Self {
+        let window = glutin::Window::new().unwrap();
+        window.set_title(window_title);
+
+        unsafe { window.make_current() };
+
+        unsafe {
+            gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
+            gl::ClearColor(0.0, 0.0, 0.0, 1.0);
+        }
 
         Context {
-            display: display,
+            window: window
         }
     }
 }
-
-
 
 impl fmt::Debug for Context {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

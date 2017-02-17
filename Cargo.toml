@@ -5,6 +5,7 @@ authors = ["hammster <mail@hans-koch.me>"]
 
 [dependencies]
 rand = "*"
-glium = "*"
-glium_text = "*"
 glutin = "*"
+gl = "*"
+libc = "*"
+yaml-rust = "*"
