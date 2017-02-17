@@ -18,7 +18,7 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
        
-        let mut context = Context::new("Rust Engine");
+        let mut context = Context::new();
         let mut scenemanager = SceneManager::new();
 
         scenemanager.create("main");

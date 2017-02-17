@@ -8,9 +8,6 @@ mod engine;
 mod game;
 
 fn main() {
-
-    let mut config = engine::config::Config::load();
-
     let mut game = game::Game::new();
     game.start();
 }

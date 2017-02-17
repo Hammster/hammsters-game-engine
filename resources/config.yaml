@@ -2,6 +2,7 @@
 # this is a example config
 
 title: test from yaml
-fullscreen: true
-window_width: 800
-window_height: 600
+fullscreen: false
+# window_width: 800
+# window_height: 600
+# vsync: false
