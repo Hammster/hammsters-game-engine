@@ -35,16 +35,28 @@ impl Game {
     pub fn start(&mut self) {
         
         for event in self.context.window.wait_events() {
+
+            // refresh drawing buffer
             unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
             self.context.window.swap_buffers();
 
             match event {
+                // match window close event
                 glutin::Event::Closed => break,
+                // match keyboard events
+                glutin::Event::KeyboardInput(glutin::ElementState::Pressed, code, key) => {
+                    // match keystrockes nased on `glutin::VirtualKeyCode` enum
+                    match key.unwrap(){
+                        glutin::VirtualKeyCode::Escape => break,
+                        _ => ()
+                    }
+                },
                 _ => ()
             }
             
         }
-      
+        
+        // stop the mainscene, which stops the game.
         self.scenemanager.get("main").unwrap().stop();
     }
 }
