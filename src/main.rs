@@ -1,6 +1,7 @@
 extern crate gl;
-extern crate libc;
+extern crate glm;
 extern crate glutin;
+extern crate libc;
 extern crate rand;
 extern crate yaml_rust;
 

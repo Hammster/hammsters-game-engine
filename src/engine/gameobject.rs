@@ -3,7 +3,6 @@ use std::fmt;
 
 pub trait GameObject: fmt::Debug {
     // Return type of Trait implementer
-    // TODO, i32 to f64 for glium
     fn new(x: f64, y: f64, w: u32, h: u32) -> Self where Self: Sized;
 
     // Required implement functions

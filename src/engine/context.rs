@@ -36,6 +36,9 @@ impl Context {
             gl::ClearColor(0.0, 0.0, 0.0, 1.0);
         }
 
+        // for streams ;)
+        // window.set_position(2000,200);
+
         Context {
             window: window
         }

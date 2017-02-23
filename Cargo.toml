@@ -7,5 +7,6 @@ authors = ["hammster <mail@hans-koch.me>"]
 rand = "*"
 glutin = "*"
 gl = "*"
+glm = "*"
 libc = "*"
 yaml-rust = "*"
